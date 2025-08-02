@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
-#include "../gbstudy/MergeSort.h"
+#include "../dsa_lib/MergeSort.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace gb;

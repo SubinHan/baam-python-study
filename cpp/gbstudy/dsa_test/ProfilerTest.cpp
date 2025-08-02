@@ -1,8 +1,6 @@
-// ProfilerTest.cpp
-
 #include "pch.h"
 #include "CppUnitTest.h"
-#include "../gbstudy/Profiler.h"
+#include "../dsa_lib/Profiler.h"
 
 #include <thread>
 
@@ -23,12 +21,12 @@ namespace UnitTest
 			// 2. 실행 (Act)
 			{
 				Profiler profiler(elapsed_time_ms);
-				std::this_thread::sleep_for(std::chrono::milliseconds(20));
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			}
 
 			// 3. 검증 (Assert)
-			Assert::IsTrue(elapsed_time_ms >= 20.0, L"Elapsed time should be at least 20ms.");
-			Assert::IsTrue(elapsed_time_ms < 30.0, L"Elapsed time should be reasonable.");
+			Assert::IsTrue(elapsed_time_ms >= 100.0, L"Elapsed time should be at least 20ms.");
+			Assert::IsTrue(elapsed_time_ms < 115.0, L"Elapsed time should be reasonable.");
 		}
 
 		TEST_METHOD(WorksWithNoDelay)

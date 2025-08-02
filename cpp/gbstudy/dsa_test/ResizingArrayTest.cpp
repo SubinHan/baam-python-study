@@ -2,7 +2,7 @@
 #include "CppUnitTest.h"
 
 // 테스트할 ResizingArray 클래스를 포함합니다.
-#include "../gbstudy/ResizingArray.h"
+#include "../dsa_lib/ResizingArray.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace gb;

@@ -1,5 +1,3 @@
-// Profiler.h
-
 #pragma once
 
 #include <chrono>

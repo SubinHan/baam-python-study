@@ -2,7 +2,7 @@
 #include "CppUnitTest.h"
 
 // 테스트할 MergeSortBU 클래스를 포함합니다.
-#include "../gbstudy/MergeSortBU.h" 
+#include "../dsa_lib/MergeSortBU.h" 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace gb;

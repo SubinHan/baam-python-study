@@ -5,9 +5,9 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gbstudy", "gbstudy\gbstudy.vcxproj", "{E9A6C70A-4981-42AE-A40B-B39635D237A7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcxproj", "{F410C309-280E-472D-8591-79C94293B851}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsa_test", "dsa_test\UnitTest.vcxproj", "{F410C309-280E-472D-8591-79C94293B851}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gbstudy_lib", "gbstudy_lib\gbstudy_lib.vcxproj", "{E8B84D7D-9F8E-4761-AA5E-743D77298CA1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsa_lib", "dsa_lib\gbstudy_lib.vcxproj", "{E8B84D7D-9F8E-4761-AA5E-743D77298CA1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project1", "Project1\Project1.vcxproj", "{5157F933-770D-4D8B-A135-4D547C0C7163}"
 EndProject
