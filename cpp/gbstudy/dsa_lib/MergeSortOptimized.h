@@ -85,6 +85,7 @@ namespace gb
 
             // 재귀 호출: src와 dst의 역할을 서로 바꿔서 전달합니다.
             // 즉, 하위 레벨에서는 dst를 src로 삼아 정렬 결과를 src에 저장합니다.
+            // sort_internal 내부를 ____로, sort_internal signature도 전부 숨겨라.
             sort_internal(dst, src, lo, mid);
             sort_internal(dst, src, mid + 1, hi);
 
@@ -94,6 +95,7 @@ namespace gb
             // 이 경우, src의 내용을 dst로 복사하기만 하면 됩니다.
             if (src[mid] <= src[mid + 1])
             {
+                // src[lo]부터, src[hi]까지, dst[lo]부터 붙여넣기
                 std::copy(src + lo, src + hi + 1, dst + lo);
                 return;
             }

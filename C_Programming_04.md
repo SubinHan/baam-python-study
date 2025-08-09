@@ -1,4 +1,300 @@
 
+
+# Visual Studio Community 설치 (초소형 C++ 환경)
+
+#### 📥 1단계: Visual Studio 설치 파일 다운로드
+
+1. 먼저, 아래 링크에 접속해서 **Visual Studio 2022 Community** 버전을 다운로드하세요. Community 버전은 학생, 개인 개발자에게 무료로 제공되는 버전입니다.
+2. 다운로드된 `vs_community.exe` 파일을 실행하면, 필요한 파일을 먼저 다운로드한 후 설치 화면이 나타납니다.
+    
+
+#### ⚙️ 2단계: C++ 개발 최소 기능 선택 (가장 중요!)
+
+설치 화면에서 **'워크로드(Workloads)'**를 선택하는 부분이 가장 중요해요. 여기서 C++ 개발에 필요한 모든 기능을 담고 있는 **`C++를 사용한 데스크톱 개발`**을 선택할 거예요. 하지만 전부 설치하면 용량이 너무 커지니, 필요한 것만 쏙쏙 골라 담아봅시다.
+
+1. '워크로드' 탭에서 **`C++를 사용한 데스크톱 개발`** 항목의 체크박스를 클릭하세요.
+2. 화면 오른쪽에 **'설치 세부 정보(Installation details)'** 패널이 나타납니다. 여기서 아래 항목들만 **체크**하고, 나머지는 **모두 체크 해제**하세요. 이게 핵심입니다!
+    **✅ 반드시 체크해야 할 항목:**
+    - **MSVC v143 - VS 2022 C++ x64/x86 빌드 도구 (최신)**
+        - C++ 코드를 컴퓨터가 이해하는 언어로 번역해주는 '컴파일러'입니다. 이게 없으면 C++ 프로그래밍을 할 수 없어요.
+    - **Windows 11 SDK** 또는 **Windows 10 SDK** (최신 버전 하나)
+        - `cout`, `cin` 같은 기본 입출력 기능을 포함한 Windows의 핵심 기능들을 사용할 수 있게 해주는 도구 모음입니다.
+    - **C++ 핵심 기능**
+        - Visual Studio가 C++ 코드를 잘 이해하고 도와줄 수 있게 하는 기본 기능입니다.
+    - **C++용 테스트 어댑터**
+        - 우리가 앞으로 사용할 '단위 테스트' 기능을 Visual Studio에서 실행하기 위해 꼭 필요한 연결고리입니다.
+            
+    
+    **❌ 체크 해제할 항목 (예시):**
+    - `IntelliCode` (AI 코드 추천 기능, 지금은 없어도 괜찮아요)
+    - `C++/CLI 지원...`
+    - `C++ MFC...`, `C++ ATL...` (오래된 GUI 라이브러리)
+    - `C++ AddressSanitizer` 등 기타 모든 항목들...
+    
+    이렇게 선택하면 설치 용량이 **수십 GB에서 2~3GB 수준으로** 크게 줄어듭니다.
+    
+3. 모두 선택했다면, 오른쪽 아래의 **`설치`** 버튼을 누릅니다. 설치가 완료될 때까지 잠시 기다려 주세요.
+
+---
+
+# 7. 상속과 다형성
+
+### 7.1. 상속 (Inheritance)
+
+#### 기본 개념
+
+상속은 객체 지향 프로그래밍의 핵심 기능 중 하나로, **기존 클래스(부모 클래스, Base Class)의 기능을 새로운 클래스(자식 클래스, Derived Class)가 물려받는 것**을 의미합니다.
+- **IS-A 관계**: 상속은 "자식은 부모의 한 종류이다 (A Student **is a** Person)" 관계가 성립할 때 사용합니다.
+- **코드 재사용**: 부모 클래스에 정의된 멤버 변수와 함수를 자식 클래스에서 다시 작성할 필요 없이 사용할 수 있어 코드의 재사용성이 높아집니다.
+- **기능 확장**: 자식 클래스는 부모에게 물려받은 기능 외에 자신만의 새로운 기능을 추가할 수 있습니다.
+#### C++ 구현 예제
+
+Python의 `InheritanceExample.py`와 유사하게 `Person`을 부모 클래스로, `Student`와 `Employee`를 자식 클래스로 구현해 보겠습니다.
+
+```c++
+// Person.h
+#pragma once
+#include <iostream>
+
+class Person {
+public:
+    // 생성자
+    Person(const char* name, int age);
+
+    // 소멸자
+    ~Person();
+
+    void greet();
+    void info();
+
+protected:
+    // 자식 클래스에서는 접근 가능해야 하므로 protected로 선언
+    const char* name;
+    int age;
+};
+
+// Person.cpp
+#include "Person.h"
+
+Person::Person(const char* new_name, int new_age) {
+    std::cout << "Person 생성자 호출" << std::endl;
+    name = new_name;
+    age = new_age;
+}
+
+Person::~Person() {
+    std::cout << "Person 소멸자 호출" << std::endl;
+}
+
+void Person::greet() {
+    std::cout << "안녕하세요, 저는 " << name << "이고, 나이는 " << age << "세입니다." << std::endl;
+}
+
+void Person::info() {
+    std::cout << "[정보] 이름: " << name << " / 나이: " << age << std::endl;
+}
+
+// Student.h
+#pragma once
+#include "Person.h"
+
+class Student : public Person {
+public:
+    Student(const char* name, int age, const char* student_id);
+    ~Student();
+
+    void greet();
+
+private:
+    const char* student_id;
+};
+
+// Student.cpp
+#include "Student.h"
+
+Student::Student(const char* name, int age, const char* student_id)
+    : Person(name, age), student_id(student_id) 
+{ // 부모 생성자 호출
+    std::cout << "Student 생성자 호출" << std::endl;
+}
+
+Student::~Student() 
+{
+    std::cout << "Student 소멸자 호출" << std::endl;
+}
+
+void Student::greet() 
+{
+    std::cout << "안녕하세요, 저는 학생 " << name << "이고, 학번은 " << student_id << "입니다." << std::endl;
+}
+```
+
+---
+
+### 2. 가상 함수(virtual)와 오버라이딩(Overriding)
+
+#### 다형성(Polymorphism)의 문제
+
+**다형성**은 "여러 형태를 가질 수 있는 능력"으로, 객체 지향 프로그래밍에서는 **하나의 인터페이스(부모 클래스 포인터)를 통해 여러 종류의 실제 객체(자식 클래스 객체)를 다루는 것**을 의미합니다.
+
+하지만 아래와 같이 코드를 작성하면 문제가 발생합니다.
+
+```c++
+// main.cpp
+#include "Student.h"
+
+int main() {
+    Person* person1 = new Student("박영희", 20, "S2025001");
+
+    // 기대: "안녕하세요, 저는 학생 박영희이고..."
+    // 실제: "안녕하세요, 저는 박영희이고, 나이는 20세입니다."
+    person1->greet(); // Person의 greet()가 호출됨
+
+    delete person1;
+    return 0;
+}
+```
+
+`Person` 포인터로 `Student` 객체를 가리키고 `greet()` 함수를 호출했지만, `Student`의 `greet()`이 아닌 `Person`의 `greet()` 함수가 호출되었습니다. 이를 **정적 바인딩(Static Binding)** 이라고 합니다. 컴파일 시점에 포인터의 타입(`Person*`)을 보고 어떤 함수를 호출할지 결정하기 때문입니다.
+
+#### virtual 키워드와 동적 바인딩
+
+이 문제를 해결하고, 실제 객체의 함수가 호출되도록 하는 것이 `virtual` 키워드입니다.
+- **virtual**: 부모 클래스에서 함수를 `virtual`로 선언하면, 해당 함수는 **동적 바인딩(Dynamic Binding)** 으로 처리됩니다.
+- **동적 바인딩**: 컴파일 시점이 아닌, **프로그램 실행 시점(runtime)** 에 포인터가 가리키는 실제 객체의 타입을 확인하여 호출할 함수를 결정합니다.
+
+#### 오버라이딩 예제
+
+`Person` 클래스의 `greet` 함수와 소멸자에 `virtual` 키워드를 추가해 보겠습니다.
+```c++
+// Person.h
+class Person {
+public:
+    Person(const char* name, int age);
+    // 소멸자는 반드시 virtual로 선언해야 메모리 누수를 막을 수 있습니다.
+    virtual ~Person();
+
+    // greet 함수를 virtual로 선언
+    virtual void greet();
+
+    void info();
+
+protected:
+    const char* name;
+    int age;
+};
+
+// Person.cpp
+// ... 이전과 동일 ...
+Person::~Person() { /* ... */ }
+void Person::greet() { /* ... */ }
+
+// Student.h
+class Student : public Person {
+public:
+    // ... 이전과 동일 ...
+    // C++11부터는 `override` 키워드를 붙여 오버라이딩을 명시하는 것이 좋습니다.
+    void greet() override;
+    // ...
+};
+
+// Student.cpp
+void Student::greet() {
+    // ... 이전과 동일 ...
+}
+
+// main.cpp
+int main() {
+    Person* people[2];
+    people[0] = new Person("박영희", 20);
+    people[1] = new Student("이철수", 24, "S2025001"); // Employee 클래스
+
+    for (int i = 0; i < 2; ++i) {
+        // virtual 덕분에 각 객체에 맞는 greet() 함수가 호출됩니다.
+        people[i]->greet(); // 다형성(Polymorphism)
+        people[i]->info();
+        std::cout << "--------------------" << std::endl;
+        delete people[i]; // virtual 소멸자 덕분에 자식 소멸자가 먼저 호출됩니다.
+    }
+    return 0;
+}
+```
+
+이제 `main` 함수에서 `people[0]->greet()`을 호출하면 `Student`의 `greet()`이, `people[1]->greet()`을 호출하면 `Employee`의 `greet()`이 올바르게 호출됩니다. 이것이 바로 다형성입니다.
+
+---
+
+### 3. C++ 형변환(Casting)
+
+C++에서는 C 스타일의 `(type)value` 캐스팅보다 명시적이고 안전한 4가지 캐스트 연산자를 제공합니다.
+
+#### `static_cast`
+- **컴파일 시점**에 타입 변환의 유효성을 검사하는, 비교적 안전한 캐스트입니다.
+- **주요 용도**:
+    - `void*`에서 다른 타입 포인터로 변환.
+    - 숫자 타입 간의 변환 (e.g., `int` -> `float`).
+    - **상속 관계에서 부모 -> 자식(Downcasting) 또는 자식 -> 부모(Upcasting)**. (단, Downcasting은 안전성을 보장하지 않음)
+
+```c++
+// Upcasting (안전)
+Student* student = new Student("박영희", 20, "S2025001");
+Person* person = static_cast<Person*>(student);
+
+// Downcasting (위험할 수 있음)
+// person이 실제로는 Student 객체를 가리키고 있음을 개발자가 확신할 때 사용
+Student* student2 = static_cast<Student*>(person);
+```
+
+#### `dynamic_cast`
+- **실행 시점**에 타입 변환의 유효성을 검사하며, 상속 관계에서의 안전한 Downcasting을 위해 사용됩니다.
+- **`virtual` 함수가 하나 이상 포함된 다형성 클래스**에만 사용할 수 있습니다. (RTTI - Run-Time Type Information 정보 사용)
+- **주요 용도**:
+    - 부모 클래스 포인터가 실제로 특정 자식 클래스 객체를 가리키는지 확인할 때 사용합니다.
+    - 변환에 실패하면 포인터의 경우 `nullptr`를, 참조의 경우 `std::bad_cast` 예외를 발생시킵니다.
+
+```c++
+Person* person = new Student("박영희", 20, "S2025001");
+
+// 안전한 Downcasting
+Student* student = dynamic_cast<Student*>(person);
+if (student) { // 캐스팅 성공
+    student->greet();
+}
+
+Employee* employee = dynamic_cast<Employee*>(person);
+if (!employee) { // 캐스팅 실패
+    std::cout << "이 사람은 Employee가 아닙니다." << std::endl;
+}
+```
+
+#### `const_cast`
+- 포인터나 참조의 **`const` 또는 `volatile` 한정자를 제거**할 때 사용합니다.
+- `const`를 제거하고 값을 수정하는 행위는 매우 위험하며, 원래 객체가 `const`로 선언된 경우 **미정의 행동(Undefined Behavior)** 을 유발할 수 있습니다.
+
+```c++
+void print_name(const char* name) {
+    // name은 const 포인터라 수정 불가
+    // const를 제거하여 수정 가능하게 만듦 (주의해서 사용)
+    char* modifiable_name = const_cast<char*>(name);
+    modifiable_name[0] = '김'; // 위험한 작업
+    std::cout << modifiable_name << std::endl;
+}
+```
+
+#### `reinterpret_cast`
+- **전혀 관련 없는 타입 간의 비트 수준 변환**을 수행하는, 가장 위험한 캐스트입니다.
+- 포인터를 정수로, 정수를 포인터로 바꾸거나 전혀 다른 타입의 포인터로 변환하는 등 저수준(low-level) 작업에 사용됩니다.
+- 이식성을 해치고 매우 위험하므로 반드시 필요한 경우가 아니면 사용하지 않아야 합니다.
+
+```c++
+int address_value = 0x12345;
+// 정수 주소값을 실제 포인터로 변환
+Person* person_ptr = reinterpret_cast<Person*>(address_value);
+
+// 포인터를 정수로 변환
+long address = reinterpret_cast<long>(person_ptr);
+```
+
 # 7. Template
 
 - C++ 템플릿을 한마디로 정의하면, **"데이터 타입(Type)을 파라미터로 받는 기능"** 입니다.
@@ -118,286 +414,4 @@ std::string message = string_box.get_item(); // "Hello World"
 3. **성능**: 템플릿은 컴파일 시점에 실제 코드를 생성합니다. 실행 시간에 추가적인 비용이 없어 속도 저하가 없습니다. (런타임 다형성과 대조적)
 
 
-
-# Visual Studio Community 설치 (초소형 C++ 환경)
-
-#### 📥 1단계: Visual Studio 설치 파일 다운로드
-
-1. 먼저, 아래 링크에 접속해서 **Visual Studio 2022 Community** 버전을 다운로드하세요. Community 버전은 학생, 개인 개발자에게 무료로 제공되는 버전입니다.
-2. 다운로드된 `vs_community.exe` 파일을 실행하면, 필요한 파일을 먼저 다운로드한 후 설치 화면이 나타납니다.
-    
-
-#### ⚙️ 2단계: C++ 개발 최소 기능 선택 (가장 중요!)
-
-설치 화면에서 **'워크로드(Workloads)'**를 선택하는 부분이 가장 중요해요. 여기서 C++ 개발에 필요한 모든 기능을 담고 있는 **`C++를 사용한 데스크톱 개발`**을 선택할 거예요. 하지만 전부 설치하면 용량이 너무 커지니, 필요한 것만 쏙쏙 골라 담아봅시다.
-
-1. '워크로드' 탭에서 **`C++를 사용한 데스크톱 개발`** 항목의 체크박스를 클릭하세요.
-2. 화면 오른쪽에 **'설치 세부 정보(Installation details)'** 패널이 나타납니다. 여기서 아래 항목들만 **체크**하고, 나머지는 **모두 체크 해제**하세요. 이게 핵심입니다!
-    **✅ 반드시 체크해야 할 항목:**
-    - **MSVC v143 - VS 2022 C++ x64/x86 빌드 도구 (최신)**
-        - C++ 코드를 컴퓨터가 이해하는 언어로 번역해주는 '컴파일러'입니다. 이게 없으면 C++ 프로그래밍을 할 수 없어요.
-    - **Windows 11 SDK** 또는 **Windows 10 SDK** (최신 버전 하나)
-        - `cout`, `cin` 같은 기본 입출력 기능을 포함한 Windows의 핵심 기능들을 사용할 수 있게 해주는 도구 모음입니다.
-    - **C++ 핵심 기능**
-        - Visual Studio가 C++ 코드를 잘 이해하고 도와줄 수 있게 하는 기본 기능입니다.
-    - **C++용 테스트 어댑터**
-        - 우리가 앞으로 사용할 '단위 테스트' 기능을 Visual Studio에서 실행하기 위해 꼭 필요한 연결고리입니다.
-            
-    
-    **❌ 체크 해제할 항목 (예시):**
-    - `IntelliCode` (AI 코드 추천 기능, 지금은 없어도 괜찮아요)
-    - `C++/CLI 지원...`
-    - `C++ MFC...`, `C++ ATL...` (오래된 GUI 라이브러리)
-    - `C++ AddressSanitizer` 등 기타 모든 항목들...
-    
-    이렇게 선택하면 설치 용량이 **수십 GB에서 2~3GB 수준으로** 크게 줄어듭니다.
-    
-3. 모두 선택했다면, 오른쪽 아래의 **`설치`** 버튼을 누릅니다. 설치가 완료될 때까지 잠시 기다려 주세요.
-
----
-
-### PART 2. 첫 프로젝트 및 테스트 환경 구축
-
-이제 C++ 코드를 작성하고, 내가 짠 코드가 잘 작동하는지 자동으로 검증해 줄 테스트 환경을 만들어 봅시다.
-
-#### 🚀 1단계: 솔루션 및 메인 프로젝트 생성
-
-'솔루션'은 여러 '프로젝트'를 담는 하나의 큰 바구니라고 생각하면 쉬워요. 우리는 코드 바구니(`AlgorithmProject`)와 테스트 바구니(`AlgorithmTests`)를 하나의 솔루션 안에 만들 거예요.
-
-1. Visual Studio 2022를 실행하고 `새 프로젝트 만들기`를 선택합니다.
-2. **`빈 프로젝트(Empty Project)`** 를 검색해서 선택하고 `다음`을 누릅니다.
-    - _C++ 콘솔 앱을 선택하면 불필요한 파일이 생길 수 있으니, 가장 깔끔한 '빈 프로젝트'로 시작하는 게 좋아요._
-3. 프로젝트 이름은 `dsa_main`, 솔루션 이름은 `dsa` 등으로 정하고 `만들기`를 누릅니다.
-
-
-#### 📕2단계: 라이브러리 솔루션 생성
-
-우리는 자료구조와 알고리즘을 배웁니다. 이 자료구조와 알고리즘은, 다른 프로그램에 의해서 사용되는 일종의 **라이브러리** 입니다. 따라서, `라이브러리`와 `클라이언트`를 분리하는 것은 좋은 시도가 될 것입니다.
-1. **솔루션 탐색기**(보통 화면 오른쪽에 있음)에서 최상단 `솔루션 '`dsa`'`을 마우스 오른쪽 클릭하고 `추가` > `새 프로젝트`를 선택하세요.
-2. **`빈 프로젝트(Empty Project)`** 를 검색해서 선택하고 `다음`을 누릅니다.
-3. 프로젝트 이름은 dsa_lib으로 정하고 `만들기`를 누릅니다.
-4. 해당 프로젝트를 `우클릭`하여, `속성(Properties)`를 누릅니다.
-5. `General`에서 `Configuration Type`을 `Static library (.lib)`으로 변경합니다.
-6. 이제 main 프로젝트가 실제 코드를 "알아볼 수 있도록" 연결해 줍시다.
-    - `dsa_main` 프로젝트 아래의 **`참조`**를 마우스 오른쪽 클릭 > `참조 추가` 선택.
-    - `dsa_lib`를 체크하고 `확인`을 누릅니다.
-
-
----
-
-### PART 3. 실전 코드 작성 및 테스트
-
-자, 모든 준비가 끝났습니다! 간단한 덧셈 함수를 만들고, 이 함수가 올바르게 작동하는지 테스트해 봅시다.
-#### ✅ 1단계: Profiler 클래스 코드 작성하기
-
-먼저, 시간 측정을 담당할 `Profiler` 클래스를 만듭니다. 이 클래스는 `.h` 파일(설계도)과 `.cpp` 파일(구현부)로 나뉩니다.
-
-1. `dsa_lib` 프로젝트의 `소스 파일` 폴더를 오른쪽 클릭 > `추가` > `새 항목`을 선택합니다.
-2. **`헤더 파일(.h)`**을 선택하고, 이름은 `Profiler.h`로 지정합니다.
-3. `Profiler.h` 파일에 `Profiler` 클래스의 구조를 작성합니다.    
-    ```c++
-// Profiler.h
-
-#pragma once
-
-#include <chrono>
-
-namespace gb
-{
-	class Profiler
-	{
-	private:
-		double& result;
-		std::chrono::time_point<std::chrono::high_resolution_clock> start_time_point;
-
-	public:
-		Profiler(double& result_ref);
-		~Profiler();
-	};
-}
-    ```
-    
-4. 다시 `dsa_lib` 프로젝트의 `소스 파일` 폴더를 오른쪽 클릭 > `추가` > `새 항목`을 선택합니다.
-5. 이번에는 **`C++ 파일(.cpp)`**을 선택하고, 이름은 `Profiler.cpp`로 지정합니다.
-6. `Profiler.cpp` 파일에 `Profiler` 클래스의 실제 동작 코드를 작성합니다.
-    ```c++
-// Profiler.cpp
-
-#include "Profiler.h"
-
-namespace gb
-{
-	// 생성자 구현
-	Profiler::Profiler(double& result_ref)
-		: result(result_ref) // 멤버 변수 초기화
-	{
-		// 생성 시점의 시간을 기록
-		start_time_point = std::chrono::high_resolution_clock::now();
-	}
-
-	// 소멸자 구현
-	Profiler::~Profiler()
-	{
-		// 소멸 시점의 시간을 기록
-		auto end_time_point = std::chrono::high_resolution_clock::now();
-
-		// 시작 시간과 끝 시간의 차이를 마이크로초(long long) 단위로 계산
-		long long start_us = std::chrono::time_point_cast<std::chrono::microseconds>(start_time_point).time_since_epoch().count();
-		long long end_us = std::chrono::time_point_cast<std::chrono::microseconds>(end_time_point).time_since_epoch().count();
-		
-		// 경과 시간 계산
-		long long duration_us = end_us - start_us;
-		
-		// 결과를 밀리초(double) 단위로 변환하여 참조하고 있던 외부 변수에 저장
-		result = duration_us * 0.001;
-	}
-}
-    ```
-
-### ✅ 2단계: Main에서 실험해보기
-
-```c++
-#include <iostream>
-#include "Profiler.h"
-
-int main() 
-{
-	long long result = 0;
-	double elapsed_time_ms = 0.0;
-
-	{
-		gb::Profiler profiler(elapsed_time_ms);
-		for (int i = 1; i <= 100000000; ++i)
-		{
-			result += i;
-		}
-	}
-
-	std::cout << "result: " << result << " elapsed time: " << elapsed_time_ms << "ms" << std::endl;
-
-	return 0;
-}
-```
-
-- 하지만 main()은 한 build 단위에서 하나만 존재해야 합니다.
-- 매번 이렇게 임시로 만든 main()에서 테스트를 해보고, 정상적으로 동작하는지 확인해야 할까요?
-- 만약 그러다가 Profiler가 변경되었을 때, Profiler가 여전히 잘 동작한다는 보장을 어떻게 할 수 있을까요?
-
-### 🧪 3단계: 테스트 프로젝트 추가 및 연결
-1. **솔루션 탐색기**(보통 화면 오른쪽에 있음)에서 최상단 `솔루션 '`dsa`'`을 마우스 오른쪽 클릭하고 `추가` > `새 프로젝트`를 선택하세요.
-2. **`네이티브 단위 테스트 프로젝트(Native Unit Test Project)`** 를 검색해서 선택하고 `다음`을 누릅니다.
-3. 프로젝트 이름은 `dsa_test` 로 정하고 `만들기`를 누릅니다.
-4. 이제 테스트 프로젝트가 실제 코드를 "알아볼 수 있도록" 연결해 줍시다.
-    - ``dsa_test`` 프로젝트 아래의 **`참조`**를 마우스 오른쪽 클릭 > `참조 추가` 선택.
-    - `dsa_lib`를 체크하고 `확인`을 누릅니다.
-
-
-### ✅ 4단계: 테스트 코드 작성하기
-
-`Profiler` 클래스가 의도대로 시간을 잘 측정하는지 확인하는 테스트 코드를 작성합니다.
-1. `MyAlgorithmTests` 프로젝트의 `unittest1.cpp` 파일을 엽니다.
-2. 아래와 같이 `Profiler.h`를 테스트하는 코드를 작성합니다.
-    ```c++
-// ProfilerTest.cpp
-
-#include "pch.h"
-#include "CppUnitTest.h"
-#include "../gbstudy/Profiler.h"
-
-#include <thread>
-
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-using namespace gb;
-
-namespace UnitTest
-{
-	TEST_CLASS(ProfilerTest)
-	{
-	public:
-
-		TEST_METHOD(UpdatesVariableOnDestruction)
-		{
-			// 1. 준비 (Arrange)
-			double elapsed_time_ms = 0.0;
-
-			// 2. 실행 (Act)
-			{
-				Profiler profiler(elapsed_time_ms);
-				std::this_thread::sleep_for(std::chrono::milliseconds(20));
-			}
-
-			// 3. 검증 (Assert)
-			Assert::IsTrue(elapsed_time_ms >= 20.0, L"Elapsed time should be at least 20ms.");
-			Assert::IsTrue(elapsed_time_ms < 30.0, L"Elapsed time should be reasonable.");
-		}
-
-		TEST_METHOD(WorksWithNoDelay)
-		{
-			// 1. 준비 (Arrange)
-			double elapsed_time_ms = -1.0;
-
-			// 2. 실행 (Act)
-			{
-				Profiler profiler(elapsed_time_ms);
-			}
-
-			// 3. 검증 (Assert)
-			Assert::IsTrue(elapsed_time_ms >= 0.0, L"Elapsed time should be non-negative.");
-			Assert::IsTrue(elapsed_time_ms < 1.0, L"Elapsed time should be very small.");
-		}
-	};
-}
-    ```
-
-### ▶️ 3단계: 테스트 실행 및 결과 확인
-
-1. Visual Studio 상단 메뉴에서 `테스트` > `테스트 탐색기`를 엽니다.
-2. 테스트 탐색기 창에 `ProfilerTests` 아래 `UpeateVariablesOnDestruction`이 보일 거예요.
-3. 창 왼쪽 상단의 초록색 재생 버튼 **`모두 실행(▶▶)`**을 클릭하세요.
-4. 테스트가 성공적으로 통과하면, 테스트 이름 옆에 **녹색 체크(✔)** 표시가 나타납니다!
-
-
-
----
-
-### 🤔 왜 프로그램을 두 개나 만들어야 할까요?
-
-우리가 최종적으로 사용자에게 줄 프로그램은 `.exe` 파일 하나입니다. 그런데 개발할 때는 "테스트용 프로그램"을 하나 더 만들어요. 왜 이런 번거로운 일을 할까요?
-
-
-![[C_Programming_04_010_WhyTest]]
-
-
-**자동차 공장 🚗을 생각해보면 아주 쉬워요.**
-
-1. **우리가 만드는 코드 (엔진, 브레이크 등 부품)** `Profiler.cpp` 같은 코드 하나하나는 자동차의 **엔진, 브레이크, 타이어** 같은 핵심 **부품**이에요.
-2. **메인 프로그램 (`.exe`) (완성된 자동차)** 이 부품들을 모두 조립해서 만든 **완성된 자동차**가 바로 우리가 만들려는 `.exe` 프로그램입니다. 고객은 이 차를 받아서 실제 도로에서 운전하죠.
-3. **테스트 프로젝트 (성능 시험장, 안전 검사장)** 자동차 공장에서는 완성된 차를 내보내기 전에, **부품들이 제대로 작동하는지 미리 시험**해보는 안전 검사장이 있습니다. 브레이크만 따로 가져와서 제동력을 시험하고, 엔진만 따로 돌려서 성능을 확인하죠. 이 **"부품 성능 시험장"** 이 바로 **"테스트 프로젝트"** 입니다.
-    
----
-
-### 🌟 테스트 프로젝트를 만들면 좋은 점 3가지
-#### 1. 믿음과 확신이 생겨요 👍
-> "내 코드는 확실히 잘 돌아가!"
-> 
-자동차 전체를 조립하기 전에 브레이크 부품이 완벽하다고 확인했다면, 나중에 완성된 차에 문제가 생겨도 "적어도 브레이크 문제는 아닐 거야"라고 확신할 수 있죠.
-
-마찬가지로, `Profiler`가 시간을 잘 재는지 미리 테스트해두면, 나중에 프로그램 전체가 이상하게 동작해도 `Profiler` 자체는 믿고 다른 곳을 점검할 수 있습니다.
-
-#### 2. 버그를 엄청나게 빨리 찾을 수 있어요 🐞
-
-> "문제가 생기면, 범인은 바로 너!"
-
-차가 고장 났을 때, 엔진 문제인지, 바퀴 문제인지, 핸들 문제인지 처음부터 다 뜯어보려면 너무 힘들어요. 하지만 평소에 부품별로 성능을 기록해뒀다면 "아, 엔진 소리가 이상하네. 엔진부터 보자!"라고 바로 원인을 좁힐 수 있죠.
-
-테스트가 있으면, 코드에 문제가 생겼을 때 **어떤 부품(어떤 함수나 클래스)에서 문제가 발생했는지** 테스트가 즉시 알려줍니다. 전체 프로그램을 뒤질 필요 없이 고장 난 곳만 바로 고칠 수 있어요.
-
-#### 3. 코드를 마음껏 바꿀 수 있어요 🧑‍🔧
-
-> "업그레이드는 자신 있게!"
-
-기존 엔진을 더 좋은 신형 엔진으로 바꾸고 싶을 때, 바로 차에 넣지 않죠. 성능 시험장에서 신형 엔진을 충분히 테스트해보고, 문제가 없다고 확인되면 그때 차에 조립합니다.
-
-마찬가지로, `Profiler`의 성능을 개선하거나 코드를 수정했을 때, 테스트 프로젝트를 돌려서 **기존 기능들이 여전히 잘 동작하는지** 바로 확인할 수 있습니다. 덕분에 코드를 고쳤다가 다른 기능까지 망가뜨리는 "끔찍한 재앙"을 막을 수 있습니다.
-
-**결론적으로, 테스트 프로젝트는 우리가 만든 코드 부품들의 "품질 보증서"를 발급해주는 아주 중요하고 고마운 존재랍니다!**
+----

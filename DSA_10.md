@@ -1,4 +1,257 @@
 
+### 프로젝트 테스트 환경 구축
+
+C++ 코드를 작성하고, 내가 짠 코드가 잘 작동하는지 자동으로 검증해 줄 테스트 환경을 만들어 봅시다.
+
+#### 🚀 1단계: 솔루션 및 메인 프로젝트 생성
+
+'솔루션'은 여러 '프로젝트'를 담는 하나의 큰 바구니라고 생각하면 쉬워요. 우리는 코드 바구니(`AlgorithmProject`)와 테스트 바구니(`AlgorithmTests`)를 하나의 솔루션 안에 만들 거예요.
+
+1. Visual Studio 2022를 실행하고 `새 프로젝트 만들기`를 선택합니다.
+2. **`빈 프로젝트(Empty Project)`** 를 검색해서 선택하고 `다음`을 누릅니다.
+    - _C++ 콘솔 앱을 선택하면 불필요한 파일이 생길 수 있으니, 가장 깔끔한 '빈 프로젝트'로 시작하는 게 좋아요._
+3. 프로젝트 이름은 `dsa_main`, 솔루션 이름은 `dsa` 등으로 정하고 `만들기`를 누릅니다.
+
+
+#### 📕2단계: 라이브러리 솔루션 생성
+
+우리는 자료구조와 알고리즘을 배웁니다. 이 자료구조와 알고리즘은, 다른 프로그램에 의해서 사용되는 일종의 **라이브러리** 입니다. 따라서, `라이브러리`와 `클라이언트`를 분리하는 것은 좋은 시도가 될 것입니다.
+1. **솔루션 탐색기**(보통 화면 오른쪽에 있음)에서 최상단 `솔루션 '`dsa`'`을 마우스 오른쪽 클릭하고 `추가` > `새 프로젝트`를 선택하세요.
+2. **`빈 프로젝트(Empty Project)`** 를 검색해서 선택하고 `다음`을 누릅니다.
+3. 프로젝트 이름은 dsa_lib으로 정하고 `만들기`를 누릅니다.
+4. 해당 프로젝트를 `우클릭`하여, `속성(Properties)`를 누릅니다.
+5. `General`에서 `Configuration Type`을 `Static library (.lib)`으로 변경합니다.
+6. 이제 main 프로젝트가 실제 코드를 "알아볼 수 있도록" 연결해 줍시다.
+    - `dsa_main` 프로젝트 아래의 **`참조`** 를 마우스 오른쪽 클릭 > `참조 추가` 선택.
+    - `dsa_lib`를 체크하고 `확인`을 누릅니다.
+    - `dsa_main 프로젝트`를 마우스 오른쪽 클릭 > `속성` 선택.
+    - Configuration Properties > VC++ Directories를 선택
+    - Include Directories의 값 부분을 눌러 Edit을 선택합니다.
+    - 위의 빈 공간에 다음과 같이 값을 입력하고, `확인`을 누릅니다.
+	    - `$(SolutionDir)dsa_lib\`
+
+
+---
+
+### PART 3. 실전 코드 작성 및 테스트
+
+자, 모든 준비가 끝났습니다! 간단한 덧셈 함수를 만들고, 이 함수가 올바르게 작동하는지 테스트해 봅시다.
+#### ✅ 1단계: Profiler 클래스 코드 작성하기
+
+먼저, 시간 측정을 담당할 `Profiler` 클래스를 만듭니다. 이 클래스는 `.h` 파일(설계도)과 `.cpp` 파일(구현부)로 나뉩니다.
+
+1. `dsa_lib` 프로젝트의 `소스 파일` 폴더를 오른쪽 클릭 > `추가` > `새 항목`을 선택합니다.
+2. **`헤더 파일(.h)`**을 선택하고, 이름은 `Profiler.h`로 지정합니다.
+3. `Profiler.h` 파일에 `Profiler` 클래스의 구조를 작성합니다.    
+    ```c++
+// Profiler.h
+
+#pragma once
+
+#include <chrono>
+
+namespace gb
+{
+	class Profiler
+	{
+	private:
+		double& result;
+		std::chrono::time_point<std::chrono::high_resolution_clock> start_time_point;
+
+	public:
+		Profiler(double& result_ref);
+		~Profiler();
+	};
+}
+    ```
+    
+4. 다시 `dsa_lib` 프로젝트의 `소스 파일` 폴더를 오른쪽 클릭 > `추가` > `새 항목`을 선택합니다.
+5. 이번에는 **`C++ 파일(.cpp)`**을 선택하고, 이름은 `Profiler.cpp`로 지정합니다.
+6. `Profiler.cpp` 파일에 `Profiler` 클래스의 실제 동작 코드를 작성합니다.
+    ```c++
+// Profiler.cpp
+
+#include "Profiler.h"
+
+namespace gb
+{
+	// 생성자 구현
+	Profiler::Profiler(double& result_ref)
+		: result(result_ref) // 멤버 변수 초기화
+	{
+		// 생성 시점의 시간을 기록
+		start_time_point = std::chrono::high_resolution_clock::now();
+	}
+
+	// 소멸자 구현
+	Profiler::~Profiler()
+	{
+		// 소멸 시점의 시간을 기록
+		auto end_time_point = std::chrono::high_resolution_clock::now();
+
+		// 시작 시간과 끝 시간의 차이를 마이크로초(long long) 단위로 계산
+		long long start_us = std::chrono::time_point_cast<std::chrono::microseconds>(start_time_point).time_since_epoch().count();
+		long long end_us = std::chrono::time_point_cast<std::chrono::microseconds>(end_time_point).time_since_epoch().count();
+		
+		// 경과 시간 계산
+		long long duration_us = end_us - start_us;
+		
+		// 결과를 밀리초(double) 단위로 변환하여 참조하고 있던 외부 변수에 저장
+		result = duration_us * 0.001;
+	}
+}
+    ```
+
+### ✅ 2단계: Main에서 실험해보기
+
+```c++
+#include <iostream>
+#include "Profiler.h"
+
+int main() 
+{
+	long long result = 0;
+	double elapsed_time_ms = 0.0;
+
+	{
+		gb::Profiler profiler(elapsed_time_ms);
+		for (int i = 1; i <= 100000000; ++i)
+		{
+			result += i;
+		}
+	}
+
+	std::cout << "result: " << result << " elapsed time: " << elapsed_time_ms << "ms" << std::endl;
+
+	return 0;
+}
+```
+
+- 하지만 main()은 한 build 단위에서 하나만 존재해야 합니다.
+- 매번 이렇게 임시로 만든 main()에서 테스트를 해보고, 정상적으로 동작하는지 확인해야 할까요?
+- 만약 그러다가 Profiler가 변경되었을 때, Profiler가 여전히 잘 동작한다는 보장을 어떻게 할 수 있을까요?
+
+### 🧪 3단계: 테스트 프로젝트 추가 및 연결
+1. **솔루션 탐색기**(보통 화면 오른쪽에 있음)에서 최상단 `솔루션 '`dsa`'`을 마우스 오른쪽 클릭하고 `추가` > `새 프로젝트`를 선택하세요.
+2. **`네이티브 단위 테스트 프로젝트(Native Unit Test Project)`** 를 검색해서 선택하고 `다음`을 누릅니다.
+3. 프로젝트 이름은 `dsa_test` 로 정하고 `만들기`를 누릅니다.
+4. 이제 테스트 프로젝트가 실제 코드를 "알아볼 수 있도록" 연결해 줍시다.
+    - ``dsa_test`` 프로젝트 아래의 **`참조`**를 마우스 오른쪽 클릭 > `참조 추가` 선택.
+    - `dsa_lib`를 체크하고 `확인`을 누릅니다.
+
+
+### ✅ 4단계: 테스트 코드 작성하기
+
+`Profiler` 클래스가 의도대로 시간을 잘 측정하는지 확인하는 테스트 코드를 작성합니다.
+1. `MyAlgorithmTests` 프로젝트의 `unittest1.cpp` 파일을 엽니다.
+2. 아래와 같이 `Profiler.h`를 테스트하는 코드를 작성합니다.
+    ```c++
+// ProfilerTest.cpp
+
+#include "pch.h"
+#include "CppUnitTest.h"
+#include "../dsa_lib/Profiler.h"
+
+#include <thread>
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace gb;
+
+namespace UnitTest
+{
+	TEST_CLASS(ProfilerTest)
+	{
+	public:
+
+		TEST_METHOD(UpdatesVariableOnDestruction)
+		{
+			// 1. 준비 (Arrange)
+			double elapsed_time_ms = 0.0;
+
+			// 2. 실행 (Act)
+			{
+				Profiler profiler(elapsed_time_ms);
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			}
+
+			// 3. 검증 (Assert)
+			Assert::IsTrue(elapsed_time_ms >= 100.0, L"Elapsed time should be at least 20ms.");
+			Assert::IsTrue(elapsed_time_ms < 115.0, L"Elapsed time should be reasonable.");
+		}
+
+		TEST_METHOD(WorksWithNoDelay)
+		{
+			// 1. 준비 (Arrange)
+			double elapsed_time_ms = -1.0;
+
+			// 2. 실행 (Act)
+			{
+				Profiler profiler(elapsed_time_ms);
+			}
+
+			// 3. 검증 (Assert)
+			Assert::IsTrue(elapsed_time_ms >= 0.0, L"Elapsed time should be non-negative.");
+			Assert::IsTrue(elapsed_time_ms < 1.0, L"Elapsed time should be very small.");
+		}
+	};
+}
+    ```
+
+### ▶️ 3단계: 테스트 실행 및 결과 확인
+
+1. Visual Studio 상단 메뉴에서 `테스트` > `테스트 탐색기`를 엽니다.
+2. 테스트 탐색기 창에 `ProfilerTests` 아래 `UpeateVariablesOnDestruction`이 보일 거예요.
+3. 창 왼쪽 상단의 초록색 재생 버튼 **`모두 실행(▶▶)`**을 클릭하세요.
+4. 테스트가 성공적으로 통과하면, 테스트 이름 옆에 **녹색 체크(✔)** 표시가 나타납니다!
+
+
+
+---
+
+### 🤔 왜 프로그램을 두 개나 만들어야 할까요?
+
+우리가 최종적으로 사용자에게 줄 프로그램은 `.exe` 파일 하나입니다. 그런데 개발할 때는 "테스트용 프로그램"을 하나 더 만들어요. 왜 이런 번거로운 일을 할까요?
+
+
+![[C_Programming_04_010_WhyTest]]
+
+
+**자동차 공장 🚗을 생각해보면 아주 쉬워요.**
+
+1. **우리가 만드는 코드 (엔진, 브레이크 등 부품)** `Profiler.cpp` 같은 코드 하나하나는 자동차의 **엔진, 브레이크, 타이어** 같은 핵심 **부품**이에요.
+2. **메인 프로그램 (`.exe`) (완성된 자동차)** 이 부품들을 모두 조립해서 만든 **완성된 자동차**가 바로 우리가 만들려는 `.exe` 프로그램입니다. 고객은 이 차를 받아서 실제 도로에서 운전하죠.
+3. **테스트 프로젝트 (성능 시험장, 안전 검사장)** 자동차 공장에서는 완성된 차를 내보내기 전에, **부품들이 제대로 작동하는지 미리 시험**해보는 안전 검사장이 있습니다. 브레이크만 따로 가져와서 제동력을 시험하고, 엔진만 따로 돌려서 성능을 확인하죠. 이 **"부품 성능 시험장"** 이 바로 **"테스트 프로젝트"** 입니다.
+    
+---
+
+### 🌟 테스트 프로젝트를 만들면 좋은 점 3가지
+#### 1. 믿음과 확신이 생겨요 👍
+> "내 코드는 확실히 잘 돌아가!"
+> 
+자동차 전체를 조립하기 전에 브레이크 부품이 완벽하다고 확인했다면, 나중에 완성된 차에 문제가 생겨도 "적어도 브레이크 문제는 아닐 거야"라고 확신할 수 있죠.
+
+마찬가지로, `Profiler`가 시간을 잘 재는지 미리 테스트해두면, 나중에 프로그램 전체가 이상하게 동작해도 `Profiler` 자체는 믿고 다른 곳을 점검할 수 있습니다.
+
+#### 2. 버그를 엄청나게 빨리 찾을 수 있어요 🐞
+
+> "문제가 생기면, 범인은 바로 너!"
+
+차가 고장 났을 때, 엔진 문제인지, 바퀴 문제인지, 핸들 문제인지 처음부터 다 뜯어보려면 너무 힘들어요. 하지만 평소에 부품별로 성능을 기록해뒀다면 "아, 엔진 소리가 이상하네. 엔진부터 보자!"라고 바로 원인을 좁힐 수 있죠.
+
+테스트가 있으면, 코드에 문제가 생겼을 때 **어떤 부품(어떤 함수나 클래스)에서 문제가 발생했는지** 테스트가 즉시 알려줍니다. 전체 프로그램을 뒤질 필요 없이 고장 난 곳만 바로 고칠 수 있어요.
+
+#### 3. 코드를 마음껏 바꿀 수 있어요 🧑‍🔧
+
+> "업그레이드는 자신 있게!"
+
+기존 엔진을 더 좋은 신형 엔진으로 바꾸고 싶을 때, 바로 차에 넣지 않죠. 성능 시험장에서 신형 엔진을 충분히 테스트해보고, 문제가 없다고 확인되면 그때 차에 조립합니다.
+
+마찬가지로, `Profiler`의 성능을 개선하거나 코드를 수정했을 때, 테스트 프로젝트를 돌려서 **기존 기능들이 여전히 잘 동작하는지** 바로 확인할 수 있습니다. 덕분에 코드를 고쳤다가 다른 기능까지 망가뜨리는 "끔찍한 재앙"을 막을 수 있습니다.
+
+**결론적으로, 테스트 프로젝트는 우리가 만든 코드 부품들의 "품질 보증서"를 발급해주는 아주 중요하고 고마운 존재랍니다!**
+
+
+
 # 2. 정렬
 
 ## 2.2 병합 정렬
@@ -179,15 +432,13 @@ namespace gb
 
 ![[02_050_MergeSortSubarrayDependenceTree]]
 
-
 ### 생각해보기
 
 - 작은 부분 배열을 정렬하는 데에도 병합 정렬이 더 빠를까요?
 - 배열이 이미 정렬된 상태인지 확인 후, 정렬되지 않은 경우에만 병합 정렬을 재귀적으로 수행하고 싶습니다. 어떻게 해야 할까요?
 - 임시 작업 배열로의 복제 제거가 가능합니다. 다음 알고리즘을 생각해볼까요?
 	- 먼저, 공간이 아닌 시간을 제거한다는 의미입니다.
-	- 왼쪽과 오른쪽을 분할할 때, 왼쪽의 결과는 임시 배열에, 오른쪽 결과는 원본 배열에 저장하고,
-	- 임시 배열과 원본 배열의 우측 부분을 이용해서 다시 원본 배열에 병합합니다.
+	- 짝수 번째 sort를 수행하는 경우, aux와 src의 위치를 바꾸어 정렬하도록 하면, 복사 대신 ping-pong하면서 정렬을 수행할 수 있습니다.
 
 
 #### 하향식 병합 정렬의 동작 과정
@@ -245,7 +496,7 @@ namespace gb
 				// lo는 병합할 두 하위 배열 중 첫 번째 배열의 시작 인덱스입니다.
 				for (int lo = 0; lo < n - sz; lo += sz + sz) {
 					// mid: 첫 번째 하위 배열의 끝 인덱스
-					int mid = lo + sz - 1;
+					int mid = lo + sz - 1; 
 					// hi: 두 번째 하위 배열의 끝 인덱스
 					// 마지막 하위 배열이 배열의 전체 크기를 넘어가지 않도록 std::min()을 사용합니다.
 					int hi = std::min(lo + sz + sz - 1, n - 1);
@@ -281,5 +532,27 @@ namespace gb
 - 결론: 병합 정렬은 점근적으로 볼 때, 존재할 수 있는 최적의 비교 기반 정렬 알고리즘이다.
 
 ### 창의적인 문제
-- 연결 리스트를 대상으로 한 병합 정렬을 구현해보자.
+###### 연결 리스트에 대한 병합 정렬을 구현해봅시다
+
+(구조를 그림과 함께 설명)
+
+- 연결 리스트의 경우, "분할"에 대한 고려가 필요합니다.
+	- 왜냐하면, 가운데에 있는 원소를 곧바로 접근할 수 없기 때문입니다.
+- 따라서 다음과 같은 방법을 사용해 볼 수 있습니다:
+	- 두 개의 포인터를 사용합니다. 하나는 slow, 하나는 fast입니다.
+	- slow는 한 칸씩 이동하고, fast는 두 칸씩 이동합니다.
+	- fast가 끝에 다다르면, slow는 중점을 가리키고 있을 것입니다.
 - 
+
+###### 앞서 제안된 최적화 기법을 적용해봅시다.
+
+- 작은 부분 배열을 정렬하는 경우에는, Insertion Sort를 사용합니다.
+	- 작은 부분 배열은, 크기가 7 이하인 배열로 생각합니다.
+- 배열이 이미 정렬된 상태인지 확인 후, 정렬되지 않은 경우에만 병합 정렬을 재귀적으로 수행하도록 합니다.
+- 임시 작업 배열로의 복제를 제거합니다.
+	- 항상 aux에서 원본 배열로 merge를 수행하는 것이 아니라, 다음 재귀 수준에서는 aux와 원본 배열의 역할을 바꿉니다.
+	- aux와 원본 배열이 서로 Ping-pong 하면서 merge가 수행되도록 개선합니다.
+	- Hint:
+		- 맨 처음에, 입력 배열을 aux에 복제해야 합니다.
+		- 함수의 signature를 변경해야 할 것입니다.
+	
