@@ -167,6 +167,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ProfilerTest.cpp" />
+    <ClCompile Include="QuickSelectTest.cpp" />
+    <ClCompile Include="QuickSort3WayTest.cpp" />
+    <ClCompile Include="QuickSortTest.cpp" />
     <ClCompile Include="ResizingArrayTest.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>

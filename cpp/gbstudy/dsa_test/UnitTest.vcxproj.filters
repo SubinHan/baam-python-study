@@ -39,6 +39,15 @@
     <ClCompile Include="MergeSortOptimizedTestcpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QuickSortTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSort3WayTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickSelectTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

@@ -45,6 +45,15 @@
     <ClInclude Include="MergeSortOptimized.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="QuickSort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSort3Way.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSelect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Profiler.cpp">

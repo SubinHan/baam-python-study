@@ -135,6 +135,9 @@
     <ClInclude Include="MergeSortOptimized.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="QuickSelect.h" />
+    <ClInclude Include="QuickSort.h" />
+    <ClInclude Include="QuickSort3Way.h" />
     <ClInclude Include="ResizingArray.h" />
     <ClInclude Include="Sort.h" />
   </ItemGroup>

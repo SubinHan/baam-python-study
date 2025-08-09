@@ -28,43 +28,55 @@
 
 ![[03_010_QuickSortOverview]]
 
-```python
-class GBQuickSort(GBSort):
-    """
-    퀵 정렬(Quick Sort) 구현 클래스.
-    """
+```c++
 
-    def sort(self, arr: GBArray) -> GBArray:
-        """
-        배열을 퀵 정렬을 사용하여 오름차순으로 정렬합니다.
+template <typename T>
+class QuickSort : public Sort<T>
+{
+public:
+	/**
+	 * @brief 배열을 퀵 정렬합니다.
+	 * @param arr 정렬할 배열
+	 * @param n 배열의 크기
+	 */
+	void sort(T arr[], int n) override
+	{
+		// 입력 의존성을 없애기 위해 배열을 무작위로 섞습니다.
+		unsigned seed = 
+			std::chrono::system_clock::now()
+			.time_since_epoch()
+			.count();
 
-        Args:
-            arr (GBArray): 정렬할 GBArray 객체.
+		std::shuffle(
+			arr, 
+			arr + n, 
+			std::default_random_engine(seed)
+		);
 
-        Returns:
-            GBArray: 정렬된 GBArray 객체.
-        """
-        # 입력 의존성을 없애기 위해 배열을 무작위로 섞습니다.
-        random.shuffle(arr)
+		// 재귀 정렬을 시작합니다.
+		do_sort(arr, 0, n - 1);
+	}
 
-        # 재귀 정렬을 시작합니다.
-        self._sort(arr, 0, len(arr) - 1)
-        return arr
+private:
+	/**
+	 * @brief arr[low..high] 범위를 재귀적으로 정렬합니다.
+	 */
+	void do_sort(T arr[], int low, int high)
+	{
+		// 기저 사례: 부분 배열의 크기가 1 이하이면 종료
+		if (high <= low)
+		{
+			return;
+		}
 
-    def _sort(self, arr: GBArray, lo: int, hi: int):
-        """
-        arr[lo..hi] 범위를 재귀적으로 정렬합니다.
-        """
-        # 베이스 케이스: 하위 배열에 원소가 1개 이하이면 더 이상 분할하지 않습니다.
-        if hi <= lo:
-            return
+		// 파티션을 수행하고 피벗의 최종 위치를 받습니다.
+		int j = partition(arr, low, high);
 
-        # 분할(partition)을 수행하고 피벗의 최종 위치 j를 반환받습니다.
-        j = self._partition(arr, lo, hi)
-        
-        # 피벗을 기준으로 나눠진 두 개의 하위 배열에 대해 재귀 호출을 수행합니다.
-        self._sort(arr, lo, j - 1)  # 왼쪽 부분 정렬
-        self._sort(arr, j + 1, hi)  # 오른쪽 부분 정렬
+		// 피벗을 기준으로 나눠진 두 부분 배열에 대해 재귀 호출
+		do_sort(arr, low, j - 1);
+		do_sort(arr, j + 1, high);
+	}
+
 ```
 
 ![[03_020_QuickSortTrace]]
@@ -98,42 +110,44 @@ class GBQuickSort(GBSort):
 
 ![[03_030_PartitioningTrace]]
 
-```python
-class GBQuickSort(GBSort):
+```c++
+int partition(T arr[], int lo, int hi)
+{
+	int i = lo;
+	int j = hi + 1;
+	T pivot = arr[lo]; // 첫 번째 원소를 피벗으로 선택
 
-    def _partition(self, arr: GBArray, lo: int, hi: int) -> int:
-        """
-        arr[lo..hi]를 분할하고, 피벗의 최종 위치를 반환합니다.
-        """
-        i, j = lo, hi + 1
-        pivot = arr[lo]  # 첫 번째 원소를 피벗으로 선택
+	while (true)
+	{
+		// 왼쪽에서 오른쪽으로 스캔: 피벗보다 크거나 같은 원소를 찾습니다.
+		i++;
+		while (i <= hi && arr[i] < pivot)
+		{
+			i++;
+		}
+		
+		// 오른쪽에서 왼쪽으로 스캔: 피벗보다 작거나 같은 원소를 찾습니다.
+		j--;
+		while (j >= lo && arr[j] > pivot)
+		{
+			j--;
+		}
+		
+		// 포인터가 교차되면 루프를 탈출합니다.
+		if (i >= j)
+		{
+			break;
+		}
 
-        while True:
-            # 왼쪽에서 오른쪽으로 스캔: 피벗보다 크거나 같은 원소를 찾습니다.
-            i += 1
-            while i <= hi and arr[i] < pivot:
-                i += 1
-            
-            # 오른쪽에서 왼쪽으로 스캔: 피벗보다 작거나 같은 원소를 찾습니다.
-            j -= 1
-            while j >= lo and arr[j] > pivot:
-                j -= 1
+		// 찾은 두 원소의 위치를 교환합니다.
+		this->swap(arr, i, j);
+	}
 
-            # 포인터가 교차되면 루프를 탈출합니다.
-            if i >= j:
-                break
-            
-            # 찾은 두 원소의 위치를 교환합니다.
-            self.swap(arr, i, j)
+	// 피벗(arr[lo])을 최종 위치(j)로 이동시킵니다.
+	this->swap(arr, lo, j);
 
-        # 피벗(arr[lo])을 최종 위치(j)로 이동시킵니다.
-        self.swap(arr, lo, j)
-        
-        # 피벗의 최종 위치를 반환합니다.
-        return j
-
-```
-
+	// 피벗의 최종 위치를 반환합니다.
+	return j;```
 
 
 ### 퀵 정렬을 구현할 때 주의사항
@@ -211,7 +225,7 @@ class GBQuickSort(GBSort):
 #### 3-중앙값 분할
 - 퀵 정렬의 성능을 개선할 수 있는 두 번째 쉬운 방법은 분할 기준 항목을 정할 때 작은 크기의 샘플에서 그 중앙값을 이용하는 것입니다.
 - 중앙값을 샘플하고 계산하는 추가 비용이 따르겠지만, 대부분의 경우 3개의 샘플을 선택하고 그 중간 항목으로 분할할 때 개선 효과를 볼 수 있다는 것이 알려져 있습니다.
-
+![[Pasted image 20250809151733.png]]
 #### 엔트로피 최적 정렬
 - 많은 수의 중복된 키를 가진 배열은 실제 응용 상황에서 자주 등장합니다.
 	- 예를 들어 많은 수의 개인 정보 파일을 생일 또는 성별을 기준으로 정렬해야 하는 경우가 그렇습니다.
@@ -237,28 +251,52 @@ class GBQuickSort(GBSort):
 
 #### 코드: 3-Way Partitioning Quick Sort
 
-```run-python
-!!!paste /py/GBQuickSort3Way.py
+```c++
+void sort_internal(T arr[], int low, int high)
+{
+	// 기저 사례: 배열 크기가 1 이하이면 종료
+	if (high <= low)
+	{
+		return;
+	}
 
-sorter = GBQuick3waySort()
+	// 3-way 파티셔닝을 위한 포인터와 피벗 설정
+	int lt = low;       // 피벗보다 작은 부분의 끝
+	int i = low + 1;    // 현재 탐색 위치
+	int gt = high;      // 피벗보다 큰 부분의 시작
+	T pivot = arr[low];
 
-# GBArray 객체로 테스트
-data = [2, 1, 2, 0, 2, 1, 2, 2, 0, 1, 2, 0, 1, 1, 2]
-arr = GBArray(len(data))
-for i, val in enumerate(data):
-	arr[i] = val
-	
-print("Original Array:", arr)
+	// 파티셔닝 루프: i 포인터가 gt 포인터를 넘어설 때까지 반복
+	while (i <= gt)
+	{
+		if (arr[i] < pivot)
+		{
+			// arr[i]가 피벗보다 작으면 lt 섹션으로 보냄
+			this->swap(arr, lt++, i++);
+		}
+		else if (arr[i] > pivot)
+		{
+			// arr[i]가 피벗보다 크면 gt 섹션으로 보냄
+			// i는 증가시키지 않음 (바꿔온 gt 위치의 값을 다시 확인해야 함)
+			this->swap(arr, i, gt--);
+		}
+		else // arr[i] == pivot
+		{
+			// arr[i]가 피벗과 같으면 i만 증가시켜 피벗 섹션에 포함
+			i++;
+		}
+	}
 
-sorter.sort(arr)
-assert sorter.is_sorted(arr), 'Sort failed.'
+	// 파티셔닝 후, 3개의 부분으로 나뉨:
+	// arr[low..lt-1] < pivot = arr[lt..gt] < arr[gt+1..high]
 
-print("Sorted Array:  ", arr)
+	// 피벗보다 작은 부분과 큰 부분을 재귀적으로 정렬
+	sort_internal(arr, low, lt - 1);
+	sort_internal(arr, gt + 1, high);
+}
 ```
-![[GBQuickSort3Way.py]]
 
-
-
+![[Pasted image 20250809151754.png]]
 ### 성능 특성
 
 - (생략)
@@ -269,11 +307,58 @@ print("Sorted Array:  ", arr)
 	- 왜냐하면 비교 연산을 전혀 이용하지 않고서 정렬 알고리즘을 개발할 수도 있기 때문입니다.
 	- 하지만 그런 경우에도 결국 퀵 정렬의 버전 중에 더 빠른 것이 있다는 것이 보여집니다.
 
-
-
 ### 생각해보기
 
 - 퀵 정렬이 훨씬 빠른데, 왜 Python은 병합 정렬과 삽입 정렬의 하이브리드 형태인 팀 정렬을 사용할까요?
+
+---
+
+####  Stable Sort (안정 정렬)
+
+**안정 정렬**은 중복된 키(key)를 가진 원소들이 정렬 후에도 **원래의 상대적인 순서를 그대로 유지**하는 정렬 방식입니다.
+- **예시**: 학생들의 `(점수, 이름)` 데이터를 **점수** 기준으로 정렬한다고 상상해 봅시다.
+
+|원본 데이터|
+|---|
+|(90, "김민준")|
+|(85, "이서아")|
+|**(90, "박도윤")**|
+
+만약 안정 정렬을 사용하면, 점수가 90점으로 동일한 "김민준"과 "박도윤"의 순서는 원래 순서 그대로 유지됩니다.
+
+|안정 정렬 후|
+|---|
+|(85, "이서아")|
+|(90, "김민준")|
+|**(90, "박도윤")**|
+
+- **대표적인 안정 정렬**:
+    - 삽입 정렬 (Insertion Sort)
+    - 병합 정렬 (Merge Sort)
+    - 버블 정렬 (Bubble Sort)
+
+---
+
+#### Unstable Sort (불안정 정렬)
+
+**불안정 정렬**은 중복된 키를 가진 원소들의 원래 상대적인 순서를 **유지한다고 보장하지 않습니다.** 정렬 과정에서 이 순서가 바뀔 수 있습니다.
+- **예시**: 위와 동일한 학생 데이터를 불안정 정렬로 처리하면 다음과 같이 순서가 바뀔 수 있습니다.
+
+|불안정 정렬 후 (가능한 결과 중 하나)|
+|---|
+|(85, "이서아")|
+|**(90, "박도윤")**|
+|(90, "김민준")|
+- **대표적인 불안정 정렬**:
+    - 퀵 정렬 (Quick Sort)
+    - 선택 정렬 (Selection Sort)
+    - 힙 정렬 (Heap Sort)
+
+
+단순히 숫자만 정렬할 때는 안정성이 중요하지 않습니다. 하지만 여러 기준으로 데이터를 정렬할 때 안정성은 매우 중요해집니다.
+예를 들어, 엑셀에서 **(1) 이름순으로 정렬**한 뒤, **(2) 부서순으로 다시 정렬**하는 경우를 생각해 보세요.
+- 만약 두 번째 '부서순' 정렬이 **안정 정렬**이라면, 같은 부서 내에서는 이전에 정렬했던 '이름순'이 그대로 유지됩니다.
+- 하지만 **불안정 정렬**이라면, 같은 부서 내의 이름 순서가 뒤죽박죽될 수 있습니다.
 
 
 ## 퀵-셀렉트
@@ -288,8 +373,57 @@ print("Sorted Array:  ", arr)
 	- 따라서, pivot의 위치는 이미 정렬된 상태의 위치이므로, 이를 기준으로 k번째 값이 어느 영역에 존재하는지 알 수 있습니다.
 	- 이를 이용하여 한쪽 방향의 부분 배열만을 계속 탐색하면서 pivot이 k번째 값이 될 때까지 반복합니다.
 
-```run-python
-!!!paste /py/GBQuickSelect.py
+```c++
+T select(T arr[], int n, int k)
+{
+	if (k < 0 || k >= n)
+	{
+		throw std::invalid_argument(
+			"k must be within the valid range of the array.");
+	}
+
+	// 최악의 경우를 피하고 평균 O(n) 성능을 보장하기 위해 배열을 섞습니다.
+	unsigned seed = 
+		std::chrono::system_clock::now()
+		.time_since_epoch()
+		.count();
+	std::shuffle(
+		arr, 
+		arr + n, 
+		std::default_random_engine(seed));
+
+	int low = 0;
+	int high = n - 1;
+
+	// 범위를 좁혀가며 k번째 원소를 찾습니다.
+	while (high > low)
+	{
+		int partition_index = partition(arr, low, high);
+
+		if (partition_index < k)
+		{
+			// 피벗이 k보다 왼쪽에 있으면, 
+			// 오른쪽 부분배열에서 계속 찾습니다.
+			low = partition_index + 1;
+		}
+		else if (partition_index > k)
+		{
+			// 피벗이 k보다 오른쪽에 있으면, 
+			// 왼쪽 부분배열에서 계속 찾습니다.
+			high = partition_index - 1;
+		}
+		else
+		{
+			// 피벗의 위치가 k와 같으면, 
+			// 원소를 찾았으므로 반환합니다.
+			return arr[k];
+		}
+	}
+
+	// 루프가 끝나면 low == high == k 이므로, arr[k]가 정답입니다.
+	return arr[k];
+}
 ```
-![[GBQuickSelect.py]]
+
+
 
