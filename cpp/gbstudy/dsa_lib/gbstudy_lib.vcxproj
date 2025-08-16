@@ -128,7 +128,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="HeapSort.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="MaxPQ.h" />
     <ClInclude Include="MergeSort.h" />
     <ClInclude Include="MergeSortBU.h" />
     <ClInclude Include="MergeSortLinkedList.h" />

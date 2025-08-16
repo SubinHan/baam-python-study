@@ -49,21 +49,17 @@ namespace gb
 			// 범위를 좁혀가며 k번째 원소를 찾습니다.
 			while (high > low)
 			{
-				int partition_index = partition(arr, low, high);
-
-				if (partition_index < k)
+				int j = partition(arr, low, high);
+				if (j < k)
 				{
-					// 피벗이 k보다 왼쪽에 있으면, 오른쪽 부분배열에서 계속 찾습니다.
-					low = partition_index + 1;
+					low = j + 1;
 				}
-				else if (partition_index > k)
+				else if(j > k)
 				{
-					// 피벗이 k보다 오른쪽에 있으면, 왼쪽 부분배열에서 계속 찾습니다.
-					high = partition_index - 1;
+					high = j - 1;
 				}
 				else
 				{
-					// 피벗의 위치가 k와 같으면, 원소를 찾았으므로 반환합니다.
 					return arr[k];
 				}
 			}

@@ -156,7 +156,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HeapSortTestcpp.cpp" />
     <ClCompile Include="LinkedListTestcpp.cpp" />
+    <ClCompile Include="MaxPQTest.cpp" />
     <ClCompile Include="MergeSortBUTest.cpp" />
     <ClCompile Include="MergeSortLinkedListTestcpp.cpp" />
     <ClCompile Include="MergeSortOptimizedTestcpp.cpp" />
