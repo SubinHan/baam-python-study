@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="BinarySearchST.h" />
     <ClInclude Include="HeapSort.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="MaxPQ.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="QuickSort.h" />
     <ClInclude Include="QuickSort3Way.h" />
     <ClInclude Include="ResizingArray.h" />
+    <ClInclude Include="SequentialSearchST.h" />
     <ClInclude Include="Sort.h" />
   </ItemGroup>
   <ItemGroup>

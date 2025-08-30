@@ -51,7 +51,13 @@
     <ClCompile Include="MaxPQTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HeapSortTestcpp.cpp">
+    <ClCompile Include="HeapSortTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SequentialSearchSTTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BinarySearchSTTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

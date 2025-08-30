@@ -156,7 +156,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HeapSortTestcpp.cpp" />
+    <ClCompile Include="BinarySearchSTTest.cpp" />
+    <ClCompile Include="HeapSortTest.cpp" />
     <ClCompile Include="LinkedListTestcpp.cpp" />
     <ClCompile Include="MaxPQTest.cpp" />
     <ClCompile Include="MergeSortBUTest.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="QuickSort3WayTest.cpp" />
     <ClCompile Include="QuickSortTest.cpp" />
     <ClCompile Include="ResizingArrayTest.cpp" />
+    <ClCompile Include="SequentialSearchSTTest.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
