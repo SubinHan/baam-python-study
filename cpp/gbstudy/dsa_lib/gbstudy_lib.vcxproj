@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="BinarySearchST.h" />
+    <ClInclude Include="BST.h" />
     <ClInclude Include="HeapSort.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="MaxPQ.h" />

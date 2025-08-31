@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BinarySearchSTTest.cpp" />
+    <ClCompile Include="BSTTest.cpp" />
     <ClCompile Include="HeapSortTest.cpp" />
     <ClCompile Include="LinkedListTestcpp.cpp" />
     <ClCompile Include="MaxPQTest.cpp" />
